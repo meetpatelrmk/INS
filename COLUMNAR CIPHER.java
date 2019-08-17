@@ -1,172 +1,45 @@
-import java.io.*;
- class columnar
-{
-	char arr[][],encrypt[][],decrypt[][],keya[],keytemp[];
-	public void creatematrixE(String s,String key,int row,int column)
-	{
-		arr=new char[row][column];
-		int k=0;
-		keya=key.toCharArray();
-		for(int i=0;i<row;i++)
-		{
-			for(int j=0;j<column;j++)
-			{
-				if(k<s.length())
-				{
-					arr[i][j]=s.charAt(k);
-					k++;
-				}
-				else
-				{
-				arr[i][j]=' ';
-				}
-			}
-		}
-		for(int i=0;i<row;i++)
-		{
-			for(int j=0;j<column;j++)
-			{
-				System.out.print(arr[i][j]+" ");
-			}
-			System.out.println();
-		}
+import java.util.*;
+class Columnar {
+	public static void main(String[] args) {
+		Scanner s = new Scanner(System.in);
+
+		System.out.print("Enter Plain Text : ");
+		String plainText = s.nextLine();
+		System.out.print("Enter key : ");
+		String key = s.nextLine();
+
+		String cipherText = encrypt(plainText,key);
+           System.out.println("Cipher Text ="+cipherText);
+
+           String decPlainText = decrypt(cipherText,key);
+           System.out.println("Plain Text ="+decPlainText);	
 	}
-	public void createkey(String key,int column)
-	{
-		keytemp=key.toCharArray();
-			for(int i=0;i<column-1;i++)
-			{
-				for(int j=i+1;j<column;j++)
-				{
-					if(keytemp[i]>keytemp[j])
-					{
-						char temp=keytemp[i];
-						keytemp[i]=keytemp[j];
-						keytemp[j]=temp;
-					}
-				}
-			}	
+	public static String encrypt(String plainText,String key){
+		int row = plainText.length()/key.length();
+		int column = key.length() ;
+		char[][] cipherText = new char[row][column];
+		String ct = "";
+		int count = 0;
+		for(int i = 0; i < row; i++) {
+			for (int j = 0; j < column; j++) {
+cipherText[i][(int)key.charAt(j) - 49] = plainText.charAt(count++);
+			}
+		}
+		for (int i = 0; i < column; i++) {
+			for (int j = 0; j < row; j++) {
+				ct += cipherText[j][i];
+			}
+		}
+		return ct;
 	}
-	public void creatematrixD(String s,String key,int row,int column)
-	{
-		arr=new char[row][column];
-		int k=0;
-		keya=key.toCharArray();
-		for(int i=0;i<column;i++)
-		{
-			for(int j=0;j<row;j++)
-			{
-				if(k<s.length())
-				{
-					arr[j][i]=s.charAt(k);
-					k++;
-				}
-				else
-				{
-					arr[j][i]=' ';
-				}
+	public static String decrypt(String cipherText,String key){
+		String pt ="";
+		int row = cipherText.length()/key.length();
+		for (int i = 0;i < row ; i++) {
+			for(int j =0 ; j < key.length() ;j++){
+pt +=cipherText.charAt((((int)key.charAt(j)-49)*row) +i);
 			}
 		}
-		
-		for(int i=0;i<row;i++)
-		{
-			for(int j=0;j<column;j++)
-			{
-				System.out.print(arr[i][j]+" ");
-			}
-			System.out.println();
-		}
+		return pt;
+	}
 }
-public void encrypt(int row,int column)
-{
-encrypt=new char[row][column];
-for(int i=0;i<column;i++)
-{
-for(int j=0;j<column;j++)
-{
-if(keya[i]==keytemp[j])
-{
-for(int k=0;k<row;k++)
-{
-encrypt[k][j]=arr[k][i];
-}
-keytemp[j]='?';
-break;
-}
-}
-}
-}
-public void decrypt(int row,int column)
-{
-decrypt=new char[row][column];
-for(int i=0;i<column;i++)
-{
-for(int j=0;j<column;j++)
-{
-if(keya[j]==keytemp[i])
-{
-for(int k=0;k<row;k++)
-{
-decrypt[k][j]=arr[k][i];
-}
-keya[j]='?';
-break;
-}
-}
-}
-}
-public void resultE(int row,int column,char arr[][])
-{
-System.out.println("Result:");
-for(int i=0;i<column;i++)
-{
-for(int j=0;j<row;j++)
-{
-System.out.print(arr[j][i]+" ");
-}
-}
-}
-public void resultD(int row,int column,char arr[][])
-{
-System.out.println("Result:");
-for(int i=0;i<row;i++)
-{
-for(int j=0;j<column;j++)
-{
-System.out.print(arr[i][j]+" ");
-}
-}
-}
-public static void main(String args[])throws IOException
-{
-		int row,column,choice;
-		columnar obj=new columnar();
-		BufferedReader in=new BufferedReader(new InputStreamReader(System.in));
-			System.out.println("Menu:\n1) Encryption\n2) Decryption");
-			choice=Integer.parseInt(in.readLine());
-			System.out.println("Enter the string:");
-			String s=in.readLine();
-			System.out.println("Enter the key:");
-			String key=in.readLine();
-			row=s.length()/key.length();
-			if(s.length()%key.length()!=0)
-			row++;
-			column=key.length();
-			switch(choice)
-{
-case 1: obj.creatematrixE(s,key,row,column);
-obj.createkey(key,column);
-obj.encrypt(row,column);
-obj.resultE(row,column,obj.encrypt);
-break;
-case 2: obj.creatematrixD(s,key,row,column);
-obj.createkey(key,column);
-obj.decrypt(row,column);
-obj.resultD(row,column,obj.decrypt);
-break;
-}
-}
-}
-
-
-
